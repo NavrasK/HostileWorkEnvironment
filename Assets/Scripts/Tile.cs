@@ -9,6 +9,7 @@ public class Tile : MonoBehaviour
     protected int[,] TileSides = { { 0, 0, 0, 0 }, { 0, 0, 1, 0 }, { 1, 0, 1, 0 }, { 1, 1, 0, 0 }, { 1, 0, 1, 1 }, { 1, 1, 1, 1 } };
     // Order should be Empty, Deadend, Straight, Elbow, T, Cross
     [SerializeField] private GameObject[] tileObjects;
+    [SerializeField] private GameObject[] tiles3D;
 
     protected static float _degPerRotation = 90;
 
@@ -89,9 +90,10 @@ public class Tile : MonoBehaviour
                     && (outsideValues[2] == tileints[2] || outsideValues[2] == -1) && (outsideValues[3] == tileints[3] || outsideValues[3] == -1))
                 {
                     fits = true;
-                    TileData t = Instantiate(tileObjects[(int)tile], new Vector3(xPos, 0, yPos), Quaternion.Euler(0, rot * _degPerRotation, 0), this.transform.parent).GetComponent<TileData>();
-                    t.x = xPos;
-                    t.y = yPos;
+                    Instantiate(tiles3D[(int)tile], new Vector3(xPos, 0, yPos), Quaternion.Euler(0, rot * _degPerRotation, 0), this.transform.parent);
+                    TileData t = Instantiate(tileObjects[(int)tile], new Vector3(xPos, 10, yPos), Quaternion.Euler(0, rot * _degPerRotation, 0), this.transform.parent).GetComponent<TileData>();
+                    t.x = xPos / 10;
+                    t.y = yPos / 10;
                     t.up = tileints[0];
                     t.right = tileints[1];
                     t.down = tileints[2];
