@@ -68,7 +68,6 @@ public class Tile : MonoBehaviour
         //pick a tile at random (shuffle bag method)
         List<StructureDefinitions.TileTypes> tileList = new List<StructureDefinitions.TileTypes>();
         tileList.Add(StructureDefinitions.TileTypes.Cross);
-        tileList.Add(StructureDefinitions.TileTypes.Deadend);
         tileList.Add(StructureDefinitions.TileTypes.Elbow);
         tileList.Add(StructureDefinitions.TileTypes.Straight);
         tileList.Add(StructureDefinitions.TileTypes.T);

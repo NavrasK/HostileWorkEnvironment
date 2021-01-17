@@ -22,23 +22,39 @@ public class Generator : MonoBehaviour {
     }
 
     private void SetupLevel() {
-        for (int i = 0; i < initialSize; i++) {
-            for (int j = 0; j < initialSize; j++) {
-                (int, int) pos = (i + offset.x, j + offset.y);
-                if (pos != (0,0)) edges.Add(pos);
-            }
-        }
-
         // Fill from center out OR Fill at random
         Tile t = Instantiate(tileGen, Vector3.zero, Quaternion.identity, this.transform).GetComponent<Tile>();
         t.CreateTile(1, 1, 1, 1);
+        GrowStart();
+        //RandomStart();
+    }
+
+    private void GrowStart() {
+        edges.Clear();
+        edges.Add((-1, 0));
+        edges.Add((1, 0));
+        edges.Add((0, 1));
+        edges.Add((0, -1));
+        for (int i = 0; i < initialSize * initialSize; i++) {
+            int px = edges[0].x;
+            int py = edges[0].y;
+            SpawnTile(px, py, true);
+            edges.RemoveAt(0);
+        }
+    }
+
+    private void RandomStart() {
+        for (int i = 0; i < initialSize; i++) {
+            for (int j = 0; j < initialSize; j++) {
+                (int, int) pos = (i + offset.x, j + offset.y);
+                if (pos != (0, 0)) edges.Add(pos);
+            }
+        }
         while (edges.Count > 0) {
             edges = StructureDefinitions.Shuffle(edges);
             SpawnTile(edges[0].x, edges[0].y);
             edges.RemoveAt(0);
         }
-
-        // Clear out edges and fill with all tiles directly outside of instatiation area
         edges.Clear();
         for (int i = 0; i < initialSize; i++) {
             edges.Add((i + offset.x, offset.y - 1));
@@ -55,28 +71,28 @@ public class Generator : MonoBehaviour {
 
         TileData n0 = neighbourRaycast(pos + new Vector3(0, 12, 10));
         if (n0 == null) {
-            AddEdge(addEdges, x, y + 1);
+            AddEdge(x, y + 1, addEdges);
 		} else {
             neighbours[0] = n0.down;
 		}
 
         TileData n1 = neighbourRaycast(pos + new Vector3(10, 12, 0));
         if (n1 == null) {
-            AddEdge(addEdges, x + 1, y);
+            AddEdge(x + 1, y, addEdges);
 		} else {
             neighbours[1] = n1.left;
 		}
 
         TileData n2 = neighbourRaycast(pos + new Vector3(0, 12, -10));
         if (n2 == null) {
-            AddEdge(addEdges, x, y - 1);
+            AddEdge(x, y - 1, addEdges);
 		} else {
             neighbours[2] = n2.up;
 		}
 
         TileData n3 = neighbourRaycast(pos + new Vector3(-10, 12, 0));
         if (n3 == null) {
-            AddEdge(addEdges, x - 1, y);
+            AddEdge(x - 1, y, addEdges);
 		} else {
             neighbours[3] = n3.right;
 		}
@@ -95,7 +111,7 @@ public class Generator : MonoBehaviour {
         return null;
     }
 
-    private void AddEdge(bool add, int x, int y) {
+    private void AddEdge(int x, int y, bool add = true) {
         if (add && !edges.Contains((x, y))) {
             Debug.Log($"Adding edge at ({x}, {y})");
             edges.Add((x, y));
@@ -106,10 +122,9 @@ public class Generator : MonoBehaviour {
         // If the player has moved far enough, store their position, then start a new chunk of generation (filling in edges)
         Vector2 delta = new Vector2(player.position.x - playerpos.x, player.position.z - playerpos.y);
         if (delta.magnitude > 10) {
-            Debug.Log(">> GENERATING");
             playerpos = (player.position.x, player.position.z);
             TileData currTile = neighbourRaycast(player.position + Vector3.up * 12);
-            Debug.Log($"{currTile.x}, {currTile.y}");
+            Debug.Log($">> GENERATING from ({currTile.x}, {currTile.y})");
             (int x, int y) reprojectOffset = ((int)(currTile.x - initialSize / 2), (int)(currTile.y - initialSize / 2));
             for (int i = 0; i < initialSize; i++) {
                 for (int j = 0; j < initialSize; j++) {
