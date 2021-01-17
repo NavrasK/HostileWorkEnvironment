@@ -469,8 +469,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1809731341}
+  - component: {fileID: 1809731342}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: LevelGenerator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -490,3 +491,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1809731342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1809731340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bb09ad4f22102e4087466d04bdac7b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  initialSize: 11
+  tileGen: {fileID: 23728785128001450, guid: 0de5c5063f882fb4fb6187451c16d8cd, type: 3}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 256

@@ -7,7 +7,7 @@ public class Tile : MonoBehaviour
 {
     // Tile sides defined in a 2D int array, as above. Referenced by enum TileTypes
     protected int[,] TileSides = { { 0, 0, 0, 0 }, { 0, 0, 1, 0 }, { 1, 0, 1, 0 }, { 1, 1, 0, 0 }, { 1, 0, 1, 1 }, { 1, 1, 1, 1 } };
-    // Order should be 
+    // Order should be Empty, Deadend, Straight, Elbow, T, Cross
     [SerializeField] private GameObject[] tileObjects;
 
     protected static float _degPerRotation = 90;
@@ -69,7 +69,6 @@ public class Tile : MonoBehaviour
         tileList.Add(StructureDefinitions.TileTypes.Cross);
         tileList.Add(StructureDefinitions.TileTypes.Deadend);
         tileList.Add(StructureDefinitions.TileTypes.Elbow);
-        tileList.Add(StructureDefinitions.TileTypes.Empty);
         tileList.Add(StructureDefinitions.TileTypes.Straight);
         tileList.Add(StructureDefinitions.TileTypes.T);
         tileList = StructureDefinitions.Shuffle(tileList);
@@ -95,9 +94,10 @@ public class Tile : MonoBehaviour
                     t.right = tileints[1];
                     t.down = tileints[2];
                     t.left = tileints[3];
+                    Destroy(this.gameObject);
                     break;
                 }
-                ShiftFaceValues(tileints);
+                tileints = ShiftFaceValues(tileints);
             }
             //repeat until valid tile is found
         }
