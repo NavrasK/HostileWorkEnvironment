@@ -72,12 +72,14 @@ public class Tile : MonoBehaviour
         tileList.Add(StructureDefinitions.TileTypes.Straight);
         tileList.Add(StructureDefinitions.TileTypes.T);
         tileList = StructureDefinitions.Shuffle(tileList);
-        Stack<StructureDefinitions.TileTypes> tileStack = new Stack<StructureDefinitions.TileTypes>(tileList);
+        Queue<StructureDefinitions.TileTypes> tileQueue = new Queue<StructureDefinitions.TileTypes>(tileList);
+        tileQueue.Enqueue(StructureDefinitions.TileTypes.Deadend);
+        tileQueue.Enqueue(StructureDefinitions.TileTypes.Empty);
 
         bool fits = false;
         while (!fits)
         {
-            var tile = tileStack.Pop();
+            var tile = tileQueue.Dequeue();
             int[] tileints = GetTileFaces(tile);
             //if tile is fully rotated thrice and none fit, throw out and grab new tile from bag
             for (int rot = 0; rot < 4; rot++)

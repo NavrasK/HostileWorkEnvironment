@@ -15,23 +15,13 @@ public class Generator : MonoBehaviour {
     private void Start() {
         offset = ((int)(transform.position.x - (initialSize / 2)), (int)(transform.position.z - (initialSize / 2)));
         SetupLevel();
-
-        // Clear out edges and fill with all tiles directly outside of instatiation area
-        edges.Clear();
-        for (int i = 0; i < initialSize; i++) {
-            edges.Add((i - offset.x, -offset.y - 1));
-            edges.Add((i - offset.x, offset.y + 1));
-            edges.Add((offset.x + 1, i - offset.y));
-            edges.Add((-offset.x - 1, i - offset.y));
-        }
     }
 
     private void SetupLevel() {
         for (int i = 0; i < initialSize; i++) {
             for (int j = 0; j < initialSize; j++) {
-                (int, int) pos = (i - offset.x, j-offset.y);
-                Debug.Log(pos);
-                if (pos != (0,0)) edges.Add((i - offset.x, j - offset.y));
+                (int, int) pos = (i + offset.x, j + offset.y);
+                if (pos != (0,0)) edges.Add(pos);
             }
         }
 
@@ -43,6 +33,15 @@ public class Generator : MonoBehaviour {
             SpawnTile(edges[0].x, edges[0].y);
             edges.RemoveAt(0);
 		}
+
+        // Clear out edges and fill with all tiles directly outside of instatiation area
+        edges.Clear();
+        for (int i = 0; i < initialSize; i++) {
+            edges.Add((i + offset.x, offset.y - 1));
+            edges.Add((i + offset.x, -offset.y + 1));
+            edges.Add((-offset.x + 1, i + offset.y));
+            edges.Add((offset.x - 1, i + offset.y));
+        }
     }
 
     private void SpawnTile(int x, int y) {
@@ -51,28 +50,24 @@ public class Generator : MonoBehaviour {
         int[] neighbours = { -1, -1, -1, -1 };
         RaycastHit hit;
         if (Physics.Raycast(pos + Vector3.back + Vector3.up, Vector3.down, out hit, Mathf.Infinity, groundLayer)) {
-            Debug.Log("Up");
             var data = hit.collider.gameObject.GetComponent<TileData>();
             if (data != null) {
                 neighbours[0] = data.down;
             }
         }
         if (Physics.Raycast(pos + Vector3.left + Vector3.up, Vector3.down, out hit, Mathf.Infinity, groundLayer)) {
-            Debug.Log("Right");
             var data = hit.collider.gameObject.GetComponent<TileData>();
             if (data != null) {
                 neighbours[1] = data.left;
             }
         }
         if (Physics.Raycast(pos + Vector3.forward + Vector3.up, Vector3.down, out hit, Mathf.Infinity, groundLayer)) {
-            Debug.Log("Down");
             var data = hit.collider.gameObject.GetComponent<TileData>();
             if (data != null) {
                 neighbours[2] = data.up;
             }
         }
         if (Physics.Raycast(pos + Vector3.right + Vector3.up, Vector3.down, out hit, Mathf.Infinity, groundLayer)) {
-            Debug.Log("Left");
             var data = hit.collider.gameObject.GetComponent<TileData>();
             if (data != null) {
                 neighbours[3] = data.right;
